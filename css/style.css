@@ -101,6 +101,10 @@ button.operator {
   font-size: 6vmin;
 }
 
+.active-operator {
+  color: rgb(255, 214, 139);
+}
+
 .edit {
   font-size: 4vmin;
   background-color: rgb(204, 133, 0);
