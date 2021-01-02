@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css?family=Ubuntu&display=swap");
 
 @font-face {
-  font-family: "digital-7";
-  src: url("./fonts/digital-7.ttf");
+  font-family: "digital-7__mono_";
+  src: url("./fonts/digital-7__mono_.ttf");
 }
 
 body {
@@ -68,7 +68,7 @@ div#screen {
   padding: 20px;
   justify-content: flex-end;
   border-radius: 0px;
-  font-family: "digital-7", monospace;
+  font-family: "digital-7__mono_", monospace;
   font-size: 12vmin;
   border: 5px inset rgb(0, 82, 0);
 }
