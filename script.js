@@ -1,10 +1,9 @@
 // operation[0] is the first number, 
 // operation [1] is the operator, 
-// operator [2] is the second number
-let operation = [];
+// operation [2] is the second number,
+// operation [3] is the equation result
 
-// stores the current number on the screen
-let displayNumber = "";
+let operation = ["","","",""];
 
 // variable to update the screen content
 const screen = document.getElementById("screen");
@@ -16,6 +15,7 @@ buttons.forEach(button => {
 })
 
 function parseInput(e) {
+    console.log(operation[3]);
     // check what type of input it is
     inputType = getInputType(this);
 
@@ -23,25 +23,22 @@ function parseInput(e) {
     let keyValue = this.id;
 
     switch(inputType) {
-        case "equals" : 
-            equals();
         case "number" :
-            addNumber(keyValue);
-        case "edit" :
-            edit(keyValue);
+            operation = inputNumber(keyValue, operation);
+            break;
         case "operator" :
-            parseOperator(keyValue);
+            operation = inputOperator(keyValue, operation);
+            break;
+        case "equals" : 
+            operation = inputEquals(operation);
+            break;
+        case "edit" :
+            operation = inputEdit(keyValue, operation);
+            break;
     }
 
-    updateDisplay();
-}
-
-// process an equals key
-function equals() {
-    // add the latest number to the operation
-    operation.push(displayNumber);
-
-    // if all three arguments are present, perform the operation
+    console.log(operation);
+    screen.textContent = updateDisplay(operation);
 }
 
 function getInputType(key) {
@@ -58,50 +55,124 @@ function getInputType(key) {
     return "unknown";
 }
 
-function addNumber(number) {
-    if (number === "dot") {
-        // only allow one decimal point
-        if (displayNumber.indexOf(".") !== -1) {
-            return;
-        } else {
-            displayNumber += displayNumber ? "." : "0."; 
-        }
+function inputNumber(number, currentOp) {
+    // if an equation just completed, start over
+    if (currentOp[3]) {
+        currentOp = newOp();
+    }
+
+    // if the first operation number is still active, add to that one
+    // otherwise, add to the second number
+    if (!currentOp[1]) {
+        currentOp[0] = addNumber(currentOp[0], number);
     } else {
-        displayNumber += number;
-    } 
+        currentOp[2] = addNumber(currentOp[2], number);
+    }
+    
+    return currentOp;
 }
 
-function edit(editType) {
-    if (editType === "clear") {
-        displayNumber = ""
+function addNumber(workingNumber, inputNumber) {
+    // only allow one decimal point
+    if (inputNumber === "dot") {
+        if (workingNumber.indexOf(".") !== -1) {
+            return workingNumber;
+        } else {
+            return workingNumber += (!workingNumber) ? "0." : ".";
+        }
     }
-    if (editType === "backspace") {
-        displayNumber = displayNumber.slice(0,-1);
+    workingNumber += inputNumber;
+
+    // don't allow more than eight digits
+    if (workingNumber.length >= 8) {
+        workingNumber = workingNumber.slice(0, 8);
     }
+
+    return workingNumber;
 }
 
-function parseOperator(operatorType) {
-    // if there is no number to operate on, operate on 0
-    if (!operation[0]) {
-        operation[0] = 0;
+function inputOperator(operator, currentOp) {
+    // if the operation is empty, make the first number 0
+    if (!currentOp[0]) {
+        currentOp[0] = "0";
     }
+    // if an operation is ready to go, evaluate it
+    if (currentOp[2]) {
+        currentOp = inputEquals(currentOp);
+    }
+    // if there is an evaluated operation, start again with the result of the last
+    if (currentOp[3]) {
+        currentOp = [currentOp[3],"","",""];
+    }
+    // set the operator
+    currentOp[1] = operator;
 
-    // if the operation is already ready to go, process the existing one first
-    else if (operation[2]) {
-        checkOperation();
-    }
-
-    else {
-        operation.push(operatorType);
-    }
+    return currentOp;
 }
 
-function updateDisplay() {
-    // don't allow more than 8 characters
-    displayNumber.length >= 8 ? displayNumber = displayNumber.slice(0, 8) : "";
+function inputEquals(currentOp) {
+    // if there is no operator, do nothing
+    if (!currentOp[1]) {
+        return currentOp;
+    }
+    // if there is no second number, set it to the same as the first number
+    if (!currentOp[2]) {
+        currentOp[2] = currentOp[0];
+    }
+    // if there is an evaluated operation, copy it with the result as the new first number
+    if (currentOp[3]) {
+        currentOp[0] = currentOp[3];
+    }
+    // evaluate!
+    currentOp[3] = operate(currentOp[0], currentOp[1], currentOp[2]);
+    return currentOp;
+}
 
-    // show the working number on the screen. If there is no working number, show "00"
-    screen.textContent = displayNumber ? displayNumber : "00";
+function inputEdit(editType, currentOp) {
+    switch (editType) {
+        case "clear" :
+            currentOp = newOp();
+            break;
+        case "backspace" :
+            // if an operation was just evaluated, treat the result as the new input
+            if (currentOp[3]) {
+                currentOp = [currentOp[3].slice(0,-1),"","",""];
+            }
+            // if the second number is being entered, remove it
+            else if (currentOp[2]) {
+                currentOp[2] = currentOp[2].slice(0,-1);
+            }
+            // if an operator was just input, remove it
+            else if (currentOp[1]) {
+                currentOp[1] = "";
+            }
+            // if the first number is being entered, remove the last digit
+            else if (currentOp[0]) {
+                currentOp[0] = currentOp[0].slice(0,-1);
+            }
+            break;
+    }
+
+    return currentOp;
+}
+
+function newOp() {
+    return ["","","",""];
+}
+
+function updateDisplay(currentOp) {
+    // if an operation was just evaluated, display the result
+    if (currentOp[3]) {
+        return currentOp[3];
+    }
+    // otherwise, display the number input most recently
+    else if (currentOp[2]) {
+        return currentOp[2];
+    } else if (currentOp[0]) {
+        return currentOp[0];
+    } else {
+        return "00";
+    }
 }
 
 // basic math functions
@@ -122,18 +193,46 @@ function divide(x, y) {
 }
 
 // take two numbers and an operator, return the result
-function operate(x, y, operator) {
-    // if only one number is passed, treat it like a number operating on itself
-    if (!y) {
-        y = x;
-    }
+function operate(x, operator, y) {
+    // if there are are decimal places, multiply by a power of 10 to get a whole number before evaluating
+    let decimalPlaces = maxDecimalPlaces(x, y);
+    factor = Math.pow(10, decimalPlaces);
+
+    x *= factor;
+    y *= factor;
+
+    let result;
 
     switch (operator) {
-        case "add" : return add(x, y);
-        case "subtract" : return subtract(x, y);
-        case "multiply" : return multiply(x, y);
-        case "divide" : return divide(x, y);
+        case "add" : 
+            result = add(x, y);
+            break;
+        case "subtract" : 
+            result = subtract(x, y);
+            break;
+        case "multiply" : 
+            result = multiply(x, y);
+            break;
+        case "divide" : 
+            result = divide(x, y);
+            break;
     }
 
-    return 0;
+    result /= factor;
+
+    return result.toString();
+}
+
+function getDecimalPlaces(num) {
+    if (num.indexOf(".") === -1) {
+        return 0;
+    } else {
+        return num.length-num.indexOf(".")-1
+    }
+}
+
+function maxDecimalPlaces(num1, num2) {
+    num1Places = getDecimalPlaces(num1);
+    num2Places = getDecimalPlaces(num2);
+    return (num1Places > num2Places) ? num1Places : num2Places;
 }
