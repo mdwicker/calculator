@@ -164,13 +164,16 @@ function inputEdit(editType, currentOp) {
             currentOp = newOp();
             break;
         case "backspace" :
-            // if an operation was just evaluated, treat the result as the new input
+            // if an operation was just evaluated, unevaluate it
             if (currentOp[3]) {
-                currentOp = [currentOp[3].slice(0,-1),"","",""];
+                currentOp[3] = "";
             }
-            // if the second number is being entered, remove it
+            // if the second number is being entered, remove the last digit
             else if (currentOp[2]) {
                 currentOp[2] = currentOp[2].slice(0,-1);
+                if (currentOp[2] === "") {
+                    currentOp[2] = "0";
+                }                
             }
             // if an operator was just input, remove it
             else if (currentOp[1]) {
@@ -179,6 +182,9 @@ function inputEdit(editType, currentOp) {
             // if the first number is being entered, remove the last digit
             else if (currentOp[0]) {
                 currentOp[0] = currentOp[0].slice(0,-1);
+                if (currentOp[0] === "") {
+                    currentOp[0] = "0";
+                }
             }
             break;
     }
