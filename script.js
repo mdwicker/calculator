@@ -105,9 +105,17 @@ function inputOperator(operator, currentOp) {
         currentOp = [currentOp[3],"","",""];
     }
     // set the operator
+    toggleActiveOperator(operator);
     currentOp[1] = operator;
 
     return currentOp;
+}
+
+function toggleActiveOperator(activeOperator) {
+    const operators = document.querySelectorAll(".operator");
+    operators.forEach(operator => {
+        operator.id = `${activeOperator}` ? operator.classList.add("active-operator") : operator.classList.remove("active-operator")    
+    });
 }
 
 function inputEquals(currentOp) {
