@@ -15,7 +15,6 @@ buttons.forEach(button => {
 })
 
 function parseInput(e) {
-    console.log(operation[3]);
     // check what type of input it is
     inputType = getInputType(this);
 
@@ -104,8 +103,7 @@ function inputOperator(operator, currentOp) {
     if (currentOp[3]) {
         currentOp = [currentOp[3],"","",""];
     }
-    // set the operator
-    toggleActiveOperator(operator);
+
     currentOp[1] = operator;
 
     return currentOp;
@@ -114,7 +112,10 @@ function inputOperator(operator, currentOp) {
 function toggleActiveOperator(activeOperator) {
     const operators = document.querySelectorAll(".operator");
     operators.forEach(operator => {
-        operator.id = `${activeOperator}` ? operator.classList.add("active-operator") : operator.classList.remove("active-operator")    
+        operator.classList.remove("active-operator");
+        if (operator.id === `${activeOperator}` && !operation[3]) {
+            operator.classList.add("active-operator");
+        }
     });
 }
 
@@ -170,7 +171,7 @@ function newOp() {
 
 function updateDisplay(currentOp) {
     // if there is an error message, display it and clear the operation
-    let display
+    let display;
     if (currentOp[4]) {
         display = currentOp[4];
         operation.pop();
@@ -194,6 +195,9 @@ function updateDisplay(currentOp) {
     if (display.length > 8) {
         display = eNotation(display);
     }
+
+    // toggle the active operator
+    toggleActiveOperator(currentOp[1]);
 
     return display;
 }
