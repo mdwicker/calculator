@@ -172,7 +172,7 @@ function inputEdit(editType, currentOp) {
             else if (currentOp[2]) {
                 currentOp[2] = currentOp[2].slice(0,-1);
                 if (currentOp[2] === "") {
-                    currentOp[2] = "0";
+                    currentOp[2] = "00";
                 }                
             }
             // if an operator was just input, remove it
@@ -183,7 +183,7 @@ function inputEdit(editType, currentOp) {
             else if (currentOp[0]) {
                 currentOp[0] = currentOp[0].slice(0,-1);
                 if (currentOp[0] === "") {
-                    currentOp[0] = "0";
+                    currentOp[0] = "00";
                 }
             }
             break;
@@ -217,6 +217,8 @@ function updateDisplay(currentOp) {
         display = currentOp[2];
     } else if (currentOp[0]) {
         display = currentOp[0];
+    } else {
+        display = "00";
     }
 
     // cut the length at 8 digits
@@ -225,12 +227,7 @@ function updateDisplay(currentOp) {
     }
 
     // remove leading zeros 
-    display = display.replace(/^0*/, "");
-
-    // display "00" if there's nothing else to display
-    if (display === "") {
-        display = "00";
-    }
+    display = display.replace(/^0*(?!0$)(?!$)/, "");
 
     // toggle the active operator
     toggleActiveOperator(currentOp[1]);
