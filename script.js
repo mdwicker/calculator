@@ -199,6 +199,8 @@ function newOp() {
 function updateDisplay(currentOp) {
     // if there is an error message, display it and clear the operation
     let display;
+
+    
     if (currentOp[4]) {
         display = currentOp[4];
         operation.pop();
@@ -215,12 +217,19 @@ function updateDisplay(currentOp) {
         display = currentOp[2];
     } else if (currentOp[0]) {
         display = currentOp[0];
-    } else {
-        display = "00";
     }
 
+    // cut the length at 8 digits
     if (display.length > 8) {
         display = eNotation(display);
+    }
+
+    // remove leading zeros 
+    display = display.replace(/^0*/, "");
+
+    // display "00" if there's nothing else to display
+    if (display === "") {
+        display = "00";
     }
 
     // toggle the active operator
