@@ -161,10 +161,12 @@ function newOp() {
 }
 
 function updateDisplay(currentOp) {
-    // if there is an error message, display it
+    // if there is an error message, display it and clear the operation
     let display
     if (currentOp[4]) {
         display = currentOp[4];
+        operation.pop();
+        operation = ["", "", "", ""];
     }
     
     // if an operation was just evaluated, display the result
@@ -195,7 +197,7 @@ function eNotation(inputNum) {
     } else {
         powerOfTen = inputNum.length - 1;
     }
-    return `${inputNum[0]}.${inputNum.slice(1,3)}e${powerOfTen}`;
+    return `${inputNum[0]}.${inputNum.slice(1,3)} e${powerOfTen}`;
 }
 
 // basic math functions
