@@ -12,25 +12,25 @@
     <div id="calculator-background">
         <div id="interface" class="container">
             <div class="item" id="screen">00</div>
-            <button class="item edit" id="clear">CLEAR</button>
-            <button class="item edit" id="backspace">BACKSPACE</button>
-            <button class="item number" id="7">7</button>
-            <button class="item number" id="8">8</button>
-            <button class="item number" id="9">9</button>
-            <button class="item number" id="4">4</button>
-            <button class="item number" id="5">5</button>
-            <button class="item number" id="6">6</button>
-            <button class="item number" id="1">1</button>
-            <button class="item number" id="2">2</button>
-            <button class="item number" id="3">3</button>
-            <button class="item number" id="0">0</button>
-            <button class="item number" id="dot">&#183</button>
-            <button class="item" id="equals">&#61</button>
+            <button data-key="{Escape}" class="item edit" id="clear">CLEAR</button>
+            <button data-key="{Backspace}" class="item edit" id="backspace">BACKSPACE</button>
+            <button data-key="{7}" class="item number" id="7">7</button>
+            <button data-key="{8}" class="item number" id="8">8</button>
+            <button data-key="{9}" class="item number" id="9">9</button>
+            <button data-key="{4}" class="item number" id="4">4</button>
+            <button data-key="{5}" class="item number" id="5">5</button>
+            <button data-key="{6}" class="item number" id="6">6</button>
+            <button data-key="{1}" class="item number" id="1">1</button>
+            <button data-key="{2}" class="item number" id="2">2</button>
+            <button data-key="{3}" class="item number" id="3">3</button>
+            <button data-key="{0}" class="item number" id="0">0</button>
+            <button data-key="{.}" class="item number" id="dot">&#183</button>
+            <button data-key="{Enter} {=}" class="item" id="equals">&#61</button>
             <div id="operators" class="item container">
-                <button class="item operator" id="divide">&#247</button>
-                <button class="item operator" id="multiply">&#215</button>
-                <button class="item operator" id="subtract">&#8722</button>
-                <button class="item operator" id="add">&#43</button>
+                <button data-key="{/}" class="item operator" id="divide">&#247</button>
+                <button data-key="{*} {x}" class="item operator" id="multiply">&#215</button>
+                <button data-key="{-}" class="item operator" id="subtract">&#8722</button>
+                <button data-key="{+}" class="item operator" id="add">&#43</button>
             </div>
         </div>
     </div>

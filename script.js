@@ -14,6 +14,27 @@ buttons.forEach(button => {
     button.addEventListener("click", parseInput);
 })
 
+
+// keyboard controls
+window.addEventListener("keydown", (e) => {
+    buttons.forEach(button => {
+        if (button.getAttribute("data-key").indexOf(`{${e.key}}`) !== -1) {
+            console.log(e.key);
+            button.classList.toggle("active");
+            button.click();
+        }
+    });
+})
+
+// remove .active styling when you lift the key
+window.addEventListener("keyup", (e) => {
+    buttons.forEach(button => {
+        if (button.getAttribute("data-key").indexOf(`{${e.key}}`) !== -1) {
+            button.classList.remove("active");
+        }
+    });
+})
+
 function parseInput(e) {
     // check what type of input it is
     inputType = getInputType(this);
