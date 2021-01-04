@@ -97,7 +97,7 @@ function inputOperator(operator, currentOp) {
         currentOp[0] = "0";
     }
     // if an operation is ready to go, evaluate it
-    if (currentOp[2]) {
+    if (currentOp[2] && !currentOp[3]) {
         currentOp = inputEquals(currentOp);
     }
     // if there is an evaluated operation, start again with the result of the last
@@ -161,18 +161,41 @@ function newOp() {
 }
 
 function updateDisplay(currentOp) {
-    // if an operation was just evaluated, display the result
-    if (currentOp[3]) {
-        return currentOp[3];
+    // if there is an error message, display it
+    let display
+    if (currentOp[4]) {
+        display = currentOp[4];
     }
+    
+    // if an operation was just evaluated, display the result
+    else if (currentOp[3]) {
+        display = currentOp[3];
+    }
+
     // otherwise, display the number input most recently
     else if (currentOp[2]) {
-        return currentOp[2];
+        display = currentOp[2];
     } else if (currentOp[0]) {
-        return currentOp[0];
+        display = currentOp[0];
     } else {
-        return "00";
+        display = "00";
     }
+
+    if (display.length > 8) {
+        display = eNotation(display);
+    }
+
+    return display;
+}
+
+function eNotation(inputNum) {
+    let powerOfTen;
+    if (inputNum.indexOf(".") !== -1) {
+        powerOfTen = inputNum.indexOf(".") - 1;
+    } else {
+        powerOfTen = inputNum.length - 1;
+    }
+    return `${inputNum[0]}.${inputNum.slice(1,3)}e${powerOfTen}`;
 }
 
 // basic math functions
@@ -214,11 +237,22 @@ function operate(x, operator, y) {
             result = multiply(x, y);
             break;
         case "divide" : 
-            result = divide(x, y);
+            if (y === 0) {
+                operation[4] = "nope";
+            }
+            else {
+                result = divide(x, y);
+            }
             break;
     }
 
     result /= factor;
+
+    result = round(result, 3);
+
+    if (result > Math.pow(10, 19)) {
+        operation[4] = "nope";
+    }
 
     return result.toString();
 }
@@ -235,4 +269,9 @@ function maxDecimalPlaces(num1, num2) {
     num1Places = getDecimalPlaces(num1);
     num2Places = getDecimalPlaces(num2);
     return (num1Places > num2Places) ? num1Places : num2Places;
+}
+
+function round(number, decimalPlaces) {
+    let factor = Math.pow(10, decimalPlaces);
+    return Math.round(number * factor) / factor;
 }
